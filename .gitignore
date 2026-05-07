@@ -1,0 +1,18 @@
+.deps/
+.pydeps/
+.venv/
+render_check/
+tmp/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Generated artifacts that don't need version control
+results/
+
+# Local copies / scratch docs
+rapor_duzenlenecek.docx
+Mustafa_Kocaman_2411203095.docx
+rapor_taslagi.md
+Diyabet Riski Tahmini Proje Ödevi Açıklama Raporu.pdf
