@@ -1,32 +1,33 @@
 # Diabetes Risk Analysis
 
-This repository contains a machine learning project for **diabetes risk prediction** using the `diabetes.csv` dataset.
+This repository presents an end-to-end machine learning study on **diabetes risk prediction** using the `diabetes.csv` dataset. The project was developed as a compact healthcare analytics workflow that moves from raw clinical measurements to model comparison, evaluation, and report-ready outputs.
 
-The project was built as an end-to-end mini data science workflow:
-- data inspection
-- data cleaning
-- feature engineering
-- multi-model classification
-- model comparison
-- report asset generation
+Rather than relying on a single algorithm, the project compares multiple classification approaches, applies targeted preprocessing, and discusses model quality from a health decision-support perspective.
 
-## Project Goal
+## Why This Project Matters
 
-The main objective is to predict whether an individual is in the diabetes risk group (`Outcome = 1`) or not (`Outcome = 0`) based on clinical measurements.
+Diabetes risk estimation is not just a modeling exercise. In real decision-support settings, the cost of missing a high-risk patient can be more important than maximizing a single headline metric such as accuracy.
 
-The project does not rely on a single model. Instead, it compares multiple classification algorithms and evaluates them with several performance metrics to identify the most suitable approach for this problem.
+This project focuses on that idea by combining:
+
+- data cleaning for medically unrealistic values
+- feature engineering for stronger clinical signal
+- comparison across 10 classification models
+- evaluation with recall, F1-score, ROC-AUC, and confusion matrix analysis
+
+## Project Highlights
+
+- uses `diabetes.csv` as the core dataset
+- treats biologically unrealistic `0` values as missing-like entries in selected variables
+- applies median-based imputation
+- creates engineered risk-oriented features and interaction terms
+- compares 10 classification algorithms in one pipeline
+- includes both split-based evaluation and 10-fold cross validation
+- generates report assets such as ROC curves, confusion matrix visuals, and model comparison charts
 
 ## Dataset
 
-The dataset used in this project is:
-
-- `diabetes.csv`
-
-Target variable:
-
-- `Outcome`
-
-Selected input features include:
+The dataset contains clinical variables commonly used in diabetes risk analysis:
 
 - `Pregnancies`
 - `Glucose`
@@ -37,14 +38,26 @@ Selected input features include:
 - `DiabetesPedigreeFunction`
 - `Age`
 
+Target variable:
+
+- `Outcome`
+
+The prediction task is binary classification:
+
+- `0`: lower observed diabetes risk group
+- `1`: diabetes risk group
+
 ## Data Preparation
 
-Before training, the project applies several preprocessing steps:
+The preprocessing workflow is one of the most important parts of the project.
 
-- biologically unrealistic `0` values in selected columns are treated as missing values
-- missing-like values are filled with median imputation
-- scaled preprocessing is used for models that are sensitive to feature magnitude
-- additional engineered features are created to improve predictive signal
+Applied steps:
+
+- inspection of missing-like values
+- replacement of unrealistic `0` values in selected medical fields
+- median imputation
+- scaling for models sensitive to feature magnitude
+- creation of additional engineered features
 
 Examples of engineered features:
 
@@ -59,29 +72,29 @@ Examples of engineered features:
 - `BMI_Age_Product`
 - `Glucose_Squared`
 
-## Models Included
+## Models Compared
 
-The project compares 10 classification algorithms:
+The project evaluates 10 classification algorithms:
 
 1. Logistic Regression
-2. KNN
-3. SVM
+2. K-Nearest Neighbors
+3. Support Vector Machine
 4. Decision Tree
 5. Random Forest
 6. Extra Trees
 7. Gradient Boosting
 8. AdaBoost
 9. Gaussian Naive Bayes
-10. MLP
+10. Multi-Layer Perceptron
 
 ## Evaluation Strategy
 
-Two evaluation perspectives are used in the project:
+Two evaluation views are used:
 
-1. Train / validation / test split for final model comparison
-2. Stratified 10-fold cross validation for video-style accuracy comparison
+1. final train/test style comparison for model selection
+2. stratified 10-fold cross validation for broader stability comparison
 
-Performance metrics:
+Main metrics:
 
 - Accuracy
 - Precision
@@ -90,69 +103,11 @@ Performance metrics:
 - ROC-AUC
 - Confusion Matrix
 
-The project gives special attention to **recall**, because in a health-related classification problem, missing a risky patient can be more critical than producing a false alarm.
-
-## Repository Structure
-
-Main files in this repository:
-
-- `diabetes_project.py`
-  Main training and evaluation pipeline for the 10 models.
-
-- `generate_cv_comparison.py`
-  Produces 10-fold cross validation accuracy results and the boxplot used for model comparison.
-
-- `generate_report_assets.py`
-  Creates visual assets such as class distribution, confusion matrix, ROC curve, and comparison graphics.
-
-- `edit_docx_report.py`
-  Prepares the final `.docx` report from the generated project outputs.
-
-- `diabetes.csv`
-  Dataset used for training and evaluation.
-
-## How to Run
-
-Use the bundled Python runtime that was used during development:
-
-```powershell
-C:\Users\yagmu\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe diabetes_project.py
-```
-
-To generate the cross-validation comparison:
-
-```powershell
-C:\Users\yagmu\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe generate_cv_comparison.py
-```
-
-To generate report visuals:
-
-```powershell
-C:\Users\yagmu\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe generate_report_assets.py
-```
-
-To generate the final report document:
-
-```powershell
-C:\Users\yagmu\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe edit_docx_report.py
-```
-
-## Generated Outputs
-
-When the scripts are run locally, they generate outputs under `results/`, such as:
-
-- `model_comparison.csv`
-- `best_model_predictions.csv`
-- `metrics.json`
-- `cv_accuracy_scores.csv`
-- `cv_accuracy_summary.csv`
-- report visual assets under `results/report_assets/`
-
-These generated artifacts are not committed to the repository by default.
+The project gives special attention to **recall**, because false negatives are especially important in healthcare-oriented prediction problems.
 
 ## Current Best Result
 
-In the current project version, the strongest model under the final split-based comparison is:
+In the latest split-based evaluation, the strongest model is:
 
 - Model: `Logistic Regression`
 - Accuracy: `0.7532`
@@ -161,13 +116,77 @@ In the current project version, the strongest model under the final split-based 
 - F1-Score: `0.7077`
 - ROC-AUC: `0.8161`
 
-Under the 10-fold cross validation comparison used to mirror the video-style boxplot, the average accuracy ranking may differ from the final split-based ranking. This is expected and is discussed in the report.
+The cross-validation ranking can differ from the final split-based ranking, which is expected in small and moderately noisy tabular datasets.
 
-## Notes
+## Repository Structure
 
-- The repository includes the project code and dataset.
-- Large local environments and generated runtime folders are ignored with `.gitignore`.
-- The final report document itself is intentionally excluded from version control.
+- `diabetes_project.py`
+  Main training and evaluation pipeline for all 10 models.
+
+- `generate_cv_comparison.py`
+  Produces 10-fold cross-validation accuracy results and boxplot-style comparison outputs.
+
+- `generate_report_assets.py`
+  Generates visuals such as class distribution, confusion matrix, ROC curve, and performance charts.
+
+- `edit_docx_report.py`
+  Builds the final report document from the generated outputs.
+
+- `diabetes.csv`
+  Dataset used for training and evaluation.
+
+## How to Run
+
+Create a Python environment and install the main dependencies used in the project:
+
+```bash
+pip install pandas numpy scikit-learn matplotlib seaborn openpyxl python-docx
+```
+
+Run the full model comparison pipeline:
+
+```bash
+python diabetes_project.py
+```
+
+Run the cross-validation comparison:
+
+```bash
+python generate_cv_comparison.py
+```
+
+Generate report visuals:
+
+```bash
+python generate_report_assets.py
+```
+
+Generate the report document:
+
+```bash
+python edit_docx_report.py
+```
+
+## Generated Outputs
+
+When executed locally, the project produces artifacts under `results/`, such as:
+
+- `model_comparison.csv`
+- `best_model_predictions.csv`
+- `metrics.json`
+- `cv_accuracy_scores.csv`
+- `cv_accuracy_summary.csv`
+- report images under `results/report_assets/`
+
+Generated outputs are intentionally excluded from version control where appropriate.
+
+## What This Repository Shows
+
+- applied machine learning on a healthcare classification problem
+- practical preprocessing for imperfect medical data
+- feature engineering on tabular clinical variables
+- model comparison beyond a single accuracy score
+- report-oriented analysis for academic or portfolio presentation
 
 ## Author
 
